@@ -56,13 +56,13 @@ pipeline {
 
         stage('Remote Docker Build & Deploy') {
             steps {
-    sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
-        sh """
+                sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
+                    sh """
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${REMOTE_USER}@${REMOTE_HOST} << ENDSSH
-    \ncd ${REMOTE_DIR} || exit 1
-    \ndocker rm -f ${CONTAINER_NAME} || true
-    \ndocker build -t ${DOCKER_IMAGE} .
-    \ndocker run -d --name ${CONTAINER_NAME} -p ${PORT}:${PORT} ${DOCKER_IMAGE}
+    cd ${REMOTE_DIR} || exit 1
+    docker rm -f ${CONTAINER_NAME} || true
+    docker build -t ${DOCKER_IMAGE} .
+    docker run -d --name ${CONTAINER_NAME} -p ${PORT}:${PORT} ${DOCKER_IMAGE}
 ENDSSH
 """
                 }
